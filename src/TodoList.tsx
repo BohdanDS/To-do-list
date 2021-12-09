@@ -1,72 +1,85 @@
-import React, {useState, ChangeEvent, KeyboardEvent, KeyboardEventHandler} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {FilterType, TaskType} from "./App";
+import Input from "./components/Input";
+import Button from "./components/Button";
+import InputCheckbox from "./components/InputCheckbox";
+import s from "./ToDoList.module.css"
 
-type ListType = {
-    title: string
-    task: Array<TaskType>
-    removeTask: (task: string) => void
-    changeFilter: (filter: FilterType) => void
-    addTask: (title: string) => void
+
+export type ToDoListPropsType = {
+    toDoListTitle: string
+    tasks: Array<TaskType>
+    removeTask: (todoListId:string, taskId: string) => void
+    addTaskApp: (todoListId:string,title: string) => void
+    changeStatus: (todoListId:string, taskId: string, isDone: boolean) => void
+    todoListId: string
+    removeTodoList: (todoListId:string) =>void
 }
 
-function TodoList(props: ListType) {
+function ToDoList({toDoListTitle, tasks, removeTask, addTaskApp, changeStatus, todoListId,removeTodoList}: ToDoListPropsType) {
+
+    const [filter, setFilter] = useState<FilterType>("all")
+    const [error, setError] = useState<string>('')
+
+    let taskForRender = tasks
+
+    if (filter === "completed") {
+        taskForRender = tasks.filter(task => task.isDone === true)
+    }
+    if (filter === "active") {
+        taskForRender = tasks.filter(task => task.isDone === false)
+    }
+
+    function changeFilter(filter: FilterType) {
+        return setFilter(filter)
+    }
 
     const [title, setTitle] = useState<string>('')
 
-    const addTask = () => {
-        if (title) {
-            props.addTask(title)
-            setTitle('')
+    const taskJSX = taskForRender.map(task => {
+
+        const removeTaskHandler = () => removeTask(todoListId, task.id)
+        const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            changeStatus(todoListId, task.id, e.currentTarget.checked)
         }
-    }
-
-    const taskJSX = props.task.map(t => {
-
-        const onClickHandler = () => props.removeTask(t.id)
-
         return (
-            <li key={t.id}>
-                <input type="checkbox" checked={t.isDone}/> <span>{t.title}</span>
-                <button onClick={onClickHandler}>x</button>
-            </li>
-        )
+            <li key={task.id} className={task.isDone ? s.isDone : ''}>
+                <InputCheckbox callback={changeStatusHandler} isDone={task.isDone}/> <span>{task.title}</span>
+                <Button btnTitle={'x'} callback={removeTaskHandler} filter ={filter}/>
+            </li>)
     })
 
-
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
-    }
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        {
-            if (e.key === 'Enter') {
-                addTask()
-            }
+    const addTask = () => {
+        if (title.trim()) {
+            addTaskApp(todoListId,title.trim())
+            setTitle('')
+        } else {
+            setError('Enter valid task')
         }
     }
 
-    const onAllClickHandler = () => props.changeFilter("all")
-    const onActiveClickHandler = () => props.changeFilter("active")
-    const onCompletedClickHandler = () => props.changeFilter("completed")
+    const removeTodoListHandler = () => {
+      removeTodoList(todoListId)
+    }
 
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{toDoListTitle}<button onClick={removeTodoListHandler}>X</button></h3>
             <div>
-                <input value={title} onChange={onChangeHandler}
-                       onKeyPress={onKeyPressHandler}
-                />
-                <button onClick={addTask}>+</button>
+                <Input title={title} callback={setTitle} addTask={addTask} setError={setError} error={error}/>
+                <Button btnTitle={"+"} callback={addTask} filter ={filter}/>
+                <div className="error-message">{error}</div>
             </div>
             <ul>
                 {taskJSX}
             </ul>
             <div>
-                <button onClick={onAllClickHandler}>All</button>
-                <button onClick={onActiveClickHandler}>Active</button>
-                <button onClick={onCompletedClickHandler}>Completed</button>
+                <Button btnTitle={'all'} callback={() => changeFilter('all')} filter ={filter}/>
+                <Button btnTitle={'active'} callback={() => changeFilter('active')} filter ={filter}/>
+                <Button btnTitle={'completed'} callback={() => changeFilter('completed')} filter ={filter}/>
             </div>
         </div>
     )
 }
 
-export default TodoList
+export default ToDoList
