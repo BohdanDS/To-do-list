@@ -14,29 +14,19 @@ export type ToDoListPropsType = {
     changeStatus: (todoListId:string, taskId: string, isDone: boolean) => void
     todoListId: string
     removeTodoList: (todoListId:string) =>void
+    changeFilter:(todoListId:string, value:FilterType) =>void
+    filter: FilterType
 }
 
-function ToDoList({toDoListTitle, tasks, removeTask, addTaskApp, changeStatus, todoListId,removeTodoList}: ToDoListPropsType) {
+function ToDoList({toDoListTitle, tasks, removeTask, addTaskApp, changeStatus, todoListId,removeTodoList, changeFilter, filter}: ToDoListPropsType) {
 
-    const [filter, setFilter] = useState<FilterType>("all")
+    // const [filter, setFilter] = useState<FilterType>("all")
     const [error, setError] = useState<string>('')
 
-    let taskForRender = tasks
-
-    if (filter === "completed") {
-        taskForRender = tasks.filter(task => task.isDone === true)
-    }
-    if (filter === "active") {
-        taskForRender = tasks.filter(task => task.isDone === false)
-    }
-
-    function changeFilter(filter: FilterType) {
-        return setFilter(filter)
-    }
 
     const [title, setTitle] = useState<string>('')
 
-    const taskJSX = taskForRender.map(task => {
+    const taskJSX = tasks.map(task => {
 
         const removeTaskHandler = () => removeTask(todoListId, task.id)
         const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,9 +64,9 @@ function ToDoList({toDoListTitle, tasks, removeTask, addTaskApp, changeStatus, t
                 {taskJSX}
             </ul>
             <div>
-                <Button btnTitle={'all'} callback={() => changeFilter('all')} filter ={filter}/>
-                <Button btnTitle={'active'} callback={() => changeFilter('active')} filter ={filter}/>
-                <Button btnTitle={'completed'} callback={() => changeFilter('completed')} filter ={filter}/>
+                <Button btnTitle={'all'} callback={() => changeFilter(todoListId,'all')} filter ={filter}/>
+                <Button btnTitle={'active'} callback={() => changeFilter(todoListId,'active')} filter ={filter}/>
+                <Button btnTitle={'completed'} callback={() => changeFilter(todoListId,'completed')} filter ={filter}/>
             </div>
         </div>
     )
