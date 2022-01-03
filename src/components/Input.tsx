@@ -1,35 +1,58 @@
-import React, {ChangeEvent, KeyboardEvent} from "react";
-import s from "./Input.module.css"
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import AddIcon from '@mui/icons-material/Add'
+import {TextField} from "@mui/material";
+import styled from "styled-components";
 
-
-
-
-type propsType = {
-    title: string
-    callback: (title: string) => void
-    addTask: () => void
-    setError: (message:string) => void
-    error:string
+type InputPropsType = {
+    addItem: (title: string) => void
 }
 
+const Input = (props: InputPropsType) => {
 
-const Input = ({title, callback, addTask,setError,error}: propsType) => {
-    const onChangeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        callback(event.currentTarget.value)
-        setError('')
-    }
+    let [title, setTitle] = useState("")
+    let [error, setError] = useState<string | null>(null)
 
-    const onEnterPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            console.log(title)
-            addTask()
+    const addItem = () => {
+        let newTitle = title.trim();
+        if (newTitle !== "") {
+            props.addItem(newTitle);
+            setTitle("");
+        } else {
+            setError("Title is required");
         }
     }
-    let className = error ? s.error : s.default
+
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
+    }
+
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        setError(null);
+        if (e.charCode === 13) {
+            addItem();
+        }
+    }
 
     return (
-        <input value={title} onChange={onChangeTitleHandler} onKeyPress={onEnterPressHandler} className={className}/>
-    )
-}
+        <div>
+            <StyleForTextArea><TextField id="standard-basic" variant="standard" value={title}
+                                         onChange={onChangeHandler}
+                                         onKeyPress={onKeyPressHandler}
+                                         className={error ? "error" : ""}
+                                         error={!!error}
+            /></StyleForTextArea>
+            <AddIcon onClick={addItem}>+</AddIcon>
+            {error && <div className="error-message">{error}</div>}
+        </div>
+    );
+};
+let StyleForTextArea = styled.span`
+  .MuiOutlinedInput-input, .MuiInputBase-input, .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+    //font-size: 14px;
+    line-height: 20%;
+    max-height: 17px;
+    max-width: 150px;
+  }`
 
-export default Input
+
+export default Input;
