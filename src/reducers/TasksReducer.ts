@@ -1,7 +1,7 @@
 import {TasksStateType} from "../App";
 import {TaskType} from "../Todolist";
 import {v1} from "uuid";
-import {initialState} from "./TodoListReducer";
+import {createTodoListACType, initialState} from "./TodoListReducer";
 
 let initialState1: TasksStateType = {
     [initialState[0].id]: [
@@ -61,6 +61,7 @@ export type ActionsTypes =
     | changeTaskStatusACType
     | updateTaskTitleACType
     | createTaskArrACType
+    | createTodoListACType
 
 export type addTaskACType = ReturnType<typeof addTaskAC>
 

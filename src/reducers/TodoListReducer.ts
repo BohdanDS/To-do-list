@@ -58,7 +58,7 @@ export const updateTitleAC = (todoListId: string, title: string) => {
     } as const
 }
 
-type createTodoListACType = ReturnType<typeof createTodoListAC>
+export type createTodoListACType = ReturnType<typeof createTodoListAC>
 
 export const createTodoListAC = (todoListId:string, title: string) => {
     return {
