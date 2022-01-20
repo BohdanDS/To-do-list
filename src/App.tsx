@@ -71,7 +71,6 @@ function App() {
                 <Grid container spacing={3}>
                     {todoListsStore.map(tl => {
                         return (
-
                             <Grid item>
                                 <Paper style={{padding: "10px", margin: "10px"}}>
                                     <Todolist
@@ -88,7 +87,6 @@ function App() {
                                     />
                                 </Paper>
                             </Grid>
-
                         )
                     })}
                 </Grid>
