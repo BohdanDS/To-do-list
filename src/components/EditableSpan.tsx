@@ -1,23 +1,23 @@
-import React, {ChangeEvent, useState, KeyboardEvent} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import styled from "styled-components";
 import {TextField} from "@mui/material";
 
 type EditableSpanPropsType = {
     title: string
-    callback: (title:string)=>void
+    callback: (title: string) => void
 }
 
-const EditableSpan = (props: EditableSpanPropsType) => {
+export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
 
     const [active, setActive] = useState<boolean>(false)
     const [localTitle, setLocalTitle] = useState<string>(props.title)
 
 
-    const onDoubleClickHandler = () =>{
+    const onDoubleClickHandler = () => {
         setActive(true)
     }
 
-    const onChangeInputHandler = (event:ChangeEvent<HTMLInputElement>) => {
+    const onChangeInputHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setLocalTitle(event.currentTarget.value)
     }
 
@@ -25,8 +25,8 @@ const EditableSpan = (props: EditableSpanPropsType) => {
         setActive(false)
         props.callback(localTitle)
     }
-    const keyEnterHandler = (event:KeyboardEvent<HTMLInputElement>) => {
-        if(event.key==='Enter') {
+    const keyEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
             props.callback(localTitle)
             setActive(false)
         }
@@ -35,19 +35,18 @@ const EditableSpan = (props: EditableSpanPropsType) => {
     return (
         <>
             {active ?
-                <StyleForTextArea><TextField id="standard-basic" variant="standard"  value={localTitle} onChange={onChangeInputHandler} onBlur={onBlurHandler} autoFocus onKeyPress={keyEnterHandler}/></StyleForTextArea>
+                <StyleForTextArea><TextField id="standard-basic" variant="standard" value={localTitle}
+                                             onChange={onChangeInputHandler} onBlur={onBlurHandler} autoFocus
+                                             onKeyPress={keyEnterHandler}/></StyleForTextArea>
 
                 : <span onDoubleClick={onDoubleClickHandler}>{props.title}</span>}
-            </>
+        </>
     );
-};
+});
 let StyleForTextArea = styled.span`
-  .MuiInput-root, .MuiInput-underline, .MuiInputBase-root, .MuiInputBase-colorPrimary, .MuiInputBase-formControl, .css-1480iag-MuiInputBase-root-MuiInput-root{
+  .MuiInput-root, .MuiInput-underline, .MuiInputBase-root, .MuiInputBase-colorPrimary, .MuiInputBase-formControl, .css-1480iag-MuiInputBase-root-MuiInput-root {
     //font-size: 14px;
     max-height: 17px;
     max-width: 100px;
   }`
 
-
-
-export default EditableSpan;

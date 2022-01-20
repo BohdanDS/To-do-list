@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
@@ -22,43 +22,42 @@ export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
-
 function App() {
 
     let dispatch = useDispatch()
     let todoListsStore = useSelector<rootReducerType, Array<TodolistType>>(state => state.todoLists) as Array<TodolistType>
 
-    function removeTask(todolistId: string, id: string) {
+
+    const removeTask = useCallback((todolistId: string, id: string) => {
         dispatch(removeTaskAC(todolistId, id))
-    }
+    }, [dispatch])
 
-    function addTask(todolistId: string, title: string) {
-        console.log('addTask')
+    const addTask = useCallback((todolistId: string, title: string) => {
         dispatch(addTaskAC(todolistId, title))
-    }
+    }, [dispatch])
 
-    function changeStatus(todolistId: string, id: string, isDone: boolean) {
+    const changeStatus = useCallback((todolistId: string, id: string, isDone: boolean) => {
         dispatch(changeTaskStatusAC(todolistId, id, isDone))
-    }
+    }, [dispatch])
 
 
-    function removeTodolist(id: string) {
+    const removeTodolist = useCallback((id: string) => {
         dispatch(removeTodoListAC(id))
-    }
+    }, [dispatch])
 
-    const addTodoList = (title: string) => {
+    const addTodoList = useCallback((title: string) => {
         let todoListId = v1()
         dispatch(createTodoListAC(todoListId, title))
         dispatch(createTaskArrAC(todoListId))
-    }
+    }, [dispatch])
 
-    const updateTaskTitle = (todoListId: string, taskId: string, title: string) => {
+    const updateTaskTitle = useCallback((todoListId: string, taskId: string, title: string) => {
         dispatch(updateTaskTitleAC(todoListId, taskId, title))
-    }
+    }, [dispatch])
 
-    const updateTitle = (todoListId: string, title: string) => {
+    const updateTitle = useCallback((todoListId: string, title: string) => {
         dispatch(updateTitleAC(todoListId, title))
-    }
+    }, [dispatch])
 
 
     return (

@@ -7,7 +7,7 @@ type InputPropsType = {
     addItem: (title: string) => void
 }
 
-const Input = (props: InputPropsType) => {
+const Input = React.memo(function (props: InputPropsType) {
 
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
@@ -28,7 +28,7 @@ const Input = (props: InputPropsType) => {
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null);
-        if (e.charCode === 13) {
+        if (e.key === 'Enter') {
             addItem();
         }
     }
@@ -45,7 +45,8 @@ const Input = (props: InputPropsType) => {
             {error && <div className="error-message">{error}</div>}
         </div>
     );
-};
+});
+
 let StyleForTextArea = styled.span`
   .MuiOutlinedInput-input, .MuiInputBase-input, .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
     //font-size: 14px;

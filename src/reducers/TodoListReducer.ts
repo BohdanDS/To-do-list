@@ -14,7 +14,8 @@ export const TodoListReducer = (state = initialState , action:ActionsTypes) : Ar
     switch (action.type){
         case 'CHANGE-FILTER': return state.map(m=>m.id===action.payload.todolistId ? {...m, filter: action.payload.value}:m)
         case "REMOVE-TODOLIST": return state.filter(f=>f.id !== action.payload.todolistId)
-        case 'UPDATE-TODOLIST-TITLE': return state.map(m=> m.id === action.payload.todoListId ? {...m, title: action.payload.title}:m)
+        case 'UPDATE-TODOLIST-TITLE':
+            return state.map(m => m.id === action.payload.todoListId ? {...m, title: action.payload.title} : m)
         case 'ADD-TODOLIST':
             let newTodoList: TodolistType = {id: action.payload.todoListId, title: action.payload.title, filter: "all" as FilterValuesType}
             return [...state, newTodoList]
