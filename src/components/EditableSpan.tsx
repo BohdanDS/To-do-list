@@ -2,12 +2,14 @@ import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import styled from "styled-components";
 import {TextField} from "@mui/material";
 
+
 type EditableSpanPropsType = {
     title: string
     callback: (title: string) => void
 }
 
 export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
+    console.log('Editable Span')
 
     const [active, setActive] = useState<boolean>(false)
     const [localTitle, setLocalTitle] = useState<string>(props.title)
@@ -26,6 +28,7 @@ export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
         props.callback(localTitle)
     }
     const keyEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+
         if (event.key === 'Enter') {
             props.callback(localTitle)
             setActive(false)

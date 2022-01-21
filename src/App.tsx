@@ -27,7 +27,6 @@ function App() {
     let dispatch = useDispatch()
     let todoListsStore = useSelector<rootReducerType, Array<TodolistType>>(state => state.todoLists) as Array<TodolistType>
 
-
     const removeTask = useCallback((todolistId: string, id: string) => {
         dispatch(removeTaskAC(todolistId, id))
     }, [dispatch])

@@ -34,8 +34,6 @@ export const Todolist = React.memo((props: PropsType) => {
 
     let dispatch = useDispatch()
     let tasksStore = useSelector<rootReducerType, Array<TaskType>>(state => state.tasks[props.todoListId]) as Array<TaskType>
-    //пофиксить что бы приходили только таски для нужного туду листа
-
 
     const changeFilter = useCallback((todoListId: string, value: FilterValuesType) => {
         dispatch(changeFilterAC(todoListId, value))
@@ -52,21 +50,14 @@ export const Todolist = React.memo((props: PropsType) => {
     if (props.filter === "completed") {
         tasksStore = tasksStore.filter(t => t.isDone === true);
     }
-    const removeTodolist = useCallback(() => props.removeTodolist(props.todoListId), [])
+    const removeTodolist = useCallback(() => props.removeTodolist(props.todoListId), [props.removeTodolist, props.todoListId])
     const onAllClickHandler = useCallback(() => changeFilter(props.todoListId, "all"), [props.todoListId])
     const onActiveClickHandler = useCallback(() => changeFilter(props.todoListId, "active"), [props.todoListId])
     const onCompletedClickHandler = useCallback(() => changeFilter(props.todoListId, "completed"), [props.todoListId])
 
-    // const localTaskTitleHandler = useCallback((taskId: string) => {
-    //     const id = taskId
-    //     return (title: string) => {
-    //         props.updateTaskTitle(props.todoListId, id, title)
-    //     }
-    // }, [])
-
     const todoListTitleHandler = useCallback((title: string) => {
         props.updateTitle(props.todoListId, title)
-    }, [])
+    }, [props.updateTitle, props.todoListId])
 
     return (
         <div>
@@ -86,8 +77,9 @@ export const Todolist = React.memo((props: PropsType) => {
                             <Task key={t.id} removeTask={props.removeTask} addTask={props.addTask}
                                   todoListId={props.todoListId}
                                   changeTaskStatus={props.changeTaskStatus}
-                                  updateTaskTitle={props.updateTaskTitle} taskId={t.id} taskTitle={t.title}
-                                  taskStatus={t.isDone}/>
+                                  updateTaskTitle={props.updateTaskTitle}
+                                  task={t}
+                            />
                         )
                     })
                 }
